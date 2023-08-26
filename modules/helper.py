@@ -15,10 +15,10 @@ parent_path = pathlib.Path(__file__).parent.parent
 # Load .env file from parent folder
 dotenv_path = parent_path / ".env"
 load_dotenv(dotenv_path)
+g = Github(os.getenv("GITHUB_TOKEN"))
+repo = g.get_organization("LeetXiv").get_repo("archive")
 
 def github_path_exists(object_path: str) -> bool:
-    g = Github(os.getenv("GITHUB_TOKEN"))
-    repo = g.get_repo("dmtrung14/leetcode_arxiv")
     try:
         repo.get_contents(object_path)
         return True

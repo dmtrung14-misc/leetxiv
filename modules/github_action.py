@@ -7,6 +7,9 @@ from discord import ui, app_commands
 from datetime import datetime
 from .helper import github_path_exists
 from dotenv import load_dotenv
+
+#################
+# COMMENT THIS OUT IF YOU ARE USING REPL.IT FOR DEPLOYMENT
 import pathlib
 
 # Get parent folder path
@@ -15,7 +18,9 @@ parent_path = pathlib.Path(__file__).parent.parent
 # Load .env file from parent folder
 dotenv_path = parent_path / ".env"
 load_dotenv(dotenv_path)
-
+#################
+g = Github(os.getenv("GITHUB_TOKEN"))
+repo = g.get_organization("LeetXiv").get_repo("archive")
 
 class push_modal(ui.Modal, title="Push your code here"):
     language = ui.TextInput(label="Language", style=discord.TextStyle.short, default="py", required=True)
@@ -23,8 +28,6 @@ class push_modal(ui.Modal, title="Push your code here"):
     code = ui.TextInput(label="Code", style=discord.TextStyle.paragraph,placeholder="Write your code here", required=True)
 
     async def on_submit(self, interaction: discord.Interaction):
-        g = Github(os.getenv("GITHUB_TOKEN"))
-        repo = g.get_repo("dmtrung14/leetcode_arxiv")
         filename=f'{self.problem}.{self.language}'
         message= f"Created solution for {self.problem}"
         content=f"{self.code}"
@@ -46,8 +49,6 @@ class update_modal(ui.Modal, title="Update your solution here"):
     code = ui.TextInput(label="Code", style=discord.TextStyle.paragraph,placeholder="Write your code here", required=True)
 
     async def on_submit(self, interaction: discord.Interaction):
-        g = Github(os.getenv("GITHUB_TOKEN"))
-        repo = g.get_repo("dmtrung14/leetcode_arxiv")
         filename = f"{self.problem}.{self.language}"
         content = f"{self.code}"
         # Check if file exists
@@ -82,8 +83,6 @@ class delete_modal(ui.Modal, title="Remove a solution here!"):
     code = ui.TextInput(label="Code", style=discord.TextStyle.paragraph,placeholder="Write your code here", required=True)
 
     async def on_submit(self, interaction: discord.Interaction):
-        g = Github(os.getenv("GITHUB_TOKEN"))
-        repo = g.get_repo("dmtrung14/leetcode_arxiv")
         filename = f"{self.problem}.{self.language}"
         if github_path_exists(filename):
             message = f"Removed solution to {self.problem}"
@@ -102,9 +101,6 @@ class delete_modal(ui.Modal, title="Remove a solution here!"):
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
 def retrieve(problem:str, language:str):
-
-    g = Github(os.getenv("GITHUB_TOKEN"))
-    repo = g.get_repo("dmtrung14/leetcode_arxiv")
     filename = f"{problem}.{language}"
     if github_path_exists(filename):
         return "```python\n" + repo.get_contents(filename).decoded_content.decode("utf-8") + "\n```"

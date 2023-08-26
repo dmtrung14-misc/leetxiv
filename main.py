@@ -5,9 +5,10 @@ import os
 from github import Github
 from discord import ui, app_commands
 from datetime import datetime
-from modules import push_modal, update_modal, delete_modal, random_problem, retrieve, fortune_teller, help_
+from modules import push_modal, update_modal, delete_modal, random_problem, retrieve, fortune_teller, help_, servant
 from termcolor import colored
 from dotenv import load_dotenv
+
 
 load_dotenv()
 
@@ -97,5 +98,5 @@ async def self(interaction: discord.Interaction):
     await interaction.response.send_message(f'of all Fortune 500 companies you matched with: {fortune_teller()}')
 
 
-
+servant()
 client.run(os.getenv("DISCORD_TOKEN"))
